@@ -3,14 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <title>README.md</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #readme {
+            white-space: pre-wrap;
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <pre id="readme"></pre>
+    <div id="readme"></div>
     <script>
+        function readText(text) {
+            const speech = new SpeechSynthesisUtterance();
+            speech.lang = 'pl-PL';
+            speech.text = text;
+            window.speechSynthesis.speak(speech);
+        }
+
         fetch('README.md')
             .then(response => response.text())
             .then(text => {
-                document.getElementById('readme').innerText = text;
+                const parsedText = marked.parse(text);
+                document.getElementById('readme').innerHTML = parsedText;
+                readText(text);
             });
     </script>
 </body>
