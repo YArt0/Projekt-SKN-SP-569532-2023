@@ -2,38 +2,32 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>README.md</title>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        #readme {
-            white-space: pre-wrap;
-            background-color: #f4f4f4;
-            padding: 20px;
-            border-radius: 5px;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatyczne czytanie tekstu</title>
 </head>
 <body>
-    <div id="readme"></div>
+    <h1>Automatyczne czytanie tekstu 🔊</h1>
+    <p id="tekst"></p>
+
     <script>
-        function readText(text) {
-            const speech = new SpeechSynthesisUtterance();
-            speech.lang = 'pl-PL';
-            speech.text = text;
-            window.speechSynthesis.speak(speech);
+        function getTextFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get("text") || "Brak tekstu do przeczytania.";
         }
 
-        fetch('README.md')
-            .then(response => response.text())
-            .then(text => {
-                const parsedText = marked.parse(text);
-                document.getElementById('readme').innerHTML = parsedText;
-                readText(text);
-            });
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                const msg = new SpeechSynthesisUtterance(text);
+                msg.lang = "pl-PL"; // Możesz zmienić na "en-US" dla angielskiego
+                window.speechSynthesis.speak(msg);
+            } else {
+                alert("Twoja przeglądarka nie obsługuje syntezatora mowy.");
+            }
+        }
+
+        const tekst = getTextFromUrl();
+        document.getElementById("tekst").innerText = tekst;
+        speakText(tekst);
     </script>
 </body>
 </html>
