@@ -1,37 +1,32 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Odczyt README</title>
+    <title>Automatic README.md Reader</title>
 </head>
 <body>
-    <h1>Odczyt README</h1>
-    <p id="content">Ładowanie treści...</p>
+    <div id="readme-content"></div>
 
     <script>
-        // Pobierz README.md z repozytorium
-        fetch('README.md')
-            .then(response => response.text())
-            .then(text => {
-                document.getElementById('content').innerText = text;
-                speakText(text); // Automatycznie odczytaj po załadowaniu
-            });
+        async function fetchReadme() {
+            const repoOwner = 'YArt0';
+            const repoName = 'skills-copilot-codespaces-vscode';
+            const readmeUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/main/README.md`;
 
-        // Funkcja do odczytywania tekstu
-        function speakText(text) {
-            let speech = new SpeechSynthesisUtterance(text);
-            speech.lang = "pl-PL"; // Ustaw język na polski
-            speech.rate = 1.0; // Normalna prędkość
-            speechSynthesis.speak(speech);
+            try {
+                const response = await fetch(readmeUrl);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                const text = await response.text();
+                document.getElementById('readme-content').textContent = text;
+            } catch (error) {
+                console.error('There has been a problem with your fetch operation:', error);
+            }
         }
 
-        // Obejście dla niektórych przeglądarek – pierwsza interakcja uruchomi głos
-        document.addEventListener("click", () => {
-            if (!speechSynthesis.speaking) {
-                speakText(document.getElementById('content').innerText);
-            }
-        }, { once: true });
+        window.onload = fetchReadme;
     </script>
 </body>
 </html>
