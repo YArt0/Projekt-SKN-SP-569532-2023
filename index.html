@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Automatic README.md Reader</title>
+    <style>
+        pre {
+            white-space: pre-wrap; /* Ensure the text wraps correctly */
+            word-wrap: break-word; /* Ensure long words break correctly */
+        }
+    </style>
 </head>
 <body>
     <div id="readme-content"></div>
@@ -20,7 +26,8 @@
                     throw new Error('Network response was not ok ' + response.statusText);
                 }
                 const text = await response.text();
-                document.getElementById('readme-content').textContent = text;
+                const readmeContent = document.getElementById('readme-content');
+                readmeContent.innerHTML = `<pre>${text}</pre>`;
             } catch (error) {
                 console.error('There has been a problem with your fetch operation:', error);
             }
