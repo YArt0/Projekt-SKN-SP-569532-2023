@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odczyt README</title>
+</head>
+<body>
+    <h1>Odczyt README</h1>
+    <p id="content">Ładowanie treści...</p>
+
+    <script>
+        // Pobierz README.md z repozytorium
+        fetch('README.md')
+            .then(response => response.text())
+            .then(text => {
+                document.getElementById('content').innerText = text;
+                speakText(text); // Automatycznie odczytaj po załadowaniu
+            });
+
+        // Funkcja do odczytywania tekstu
+        function speakText(text) {
+            let speech = new SpeechSynthesisUtterance(text);
+            speech.lang = "pl-PL"; // Ustaw język na polski
+            speech.rate = 1.0; // Normalna prędkość
+            speechSynthesis.speak(speech);
+        }
+
+        // Obejście dla niektórych przeglądarek – pierwsza interakcja uruchomi głos
+        document.addEventListener("click", () => {
+            if (!speechSynthesis.speaking) {
+                speakText(document.getElementById('content').innerText);
+            }
+        }, { once: true });
+    </script>
+</body>
+</html>
